@@ -1,9 +1,10 @@
 ---
-title: "Draft: Exploration on the Use of WDQS"
+title: "Exploration on the Use of WDQS"
 author: "Chelsy Xie (Analysis & Report)"
 date: "31 August 2016"
 output:
   pdf_document:
+    keep_tex: yes
     fig_caption: yes
     fig_height: 7
     fig_width: 5
@@ -17,43 +18,45 @@ fontsize: 12pt
 ---
 
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.pos = 'H')
 ```
 
 \renewcommand{\abstractname}{Executive Summary}
 \begin{abstract}
-Wikidata Query Service(WDQS) was launched publicly on September 7, 2015. As the first anniversary coming up, we want to take a look into who is using WDQS, and how they are using it. In this report, we focus on the successful (HTTP status codes 200 \& 304) web requests to the SPARQL endpoint, their breakdown by country, user agent, referer class, and their pattern over time.
+Wikidata Query Service (WDQS) was launched publicly on September 7, 2015. As the first anniversary is coming up, we want to take a look into who is using WDQS, and how they are using it. In this report, we focus on the web requests to the SPARQL endpoint, their breakdown by country, user agent, referer class, and their pattern over time. 
+
+We found that Germany, United States and France have the largest number of users and queries. Among regular users, Mac OS X and Chrome are most popular, while Ubuntu and Firefox users submit the most queries. Most queries have no referer, followed by those referred from search engine. There are weekly cycles in the number of queries and users. We also saw an increasing trend in the number of users.
 \end{abstract}
 
 ## Data
 
-Extracting successful (HTTP status codes 200 \& 304) web requests to the SPARQL endpoint from July 1st to August 29, 2016, we count the number of queries and users(identified by the combination of client IP and user agent) by country, user agent and referer class. See data.R for more details.
+Extracting successful (HTTP status codes 200 \& 304) web requests to the SPARQL endpoint from July 1st to August 29, 2016, we count the number of queries and users by country, user agent and referer class. Here the "user" is identified by the combination of client IP and user agent, since different devices, OS's, and browsers on the same network may share the same IP address. However, if users update their browsers and OS's to a newer version in the middle of the day, they would be counted as two users that day. See [data.R](https://github.com/wikimedia-research/Discovery-WDQS-Usage-Explore/blob/master/data.R) for more details.
 
 \newpage
 
-## Cross-Sectional
+## Results
+
+### Cross-Sectional
 
 ![Germany, United States and France take the first 3 places on the rank. While most of them are spider queries in Germany and US, France has the most user queries.](figures/n_query_by_country.png)
 
-![United States, Germany and France have the most number of WDQS users.](figures/n_user_by_country.png)
+![United States, Germany and France have the largest number of WDQS users.](figures/n_user_by_country.png)
 
-![Number of WDQS Queries and Number of WDQS Users by Agent Type.](figures/by_agent_type.png)
+![Number of WDQS Queries and Number of WDQS Users by User Type.](figures/by_agent_type.png)
 
-![Top 15 OS by Number of WDQS Queries.](figures/n_query_by_os.png)
+![Top 15 Operating Systems by Number of WDQS Queries, Not Known Automata Only.](figures/n_query_by_os.png)
 
-![Top 15 OS by Number of WDQS Users.](figures/n_user_by_os.png)
+![Top 15 Operating Systems by Number of WDQS Users, Not Known Automata Only.](figures/n_user_by_os.png)
 
-![Top 15 Browser by Number of WDQS Queries.](figures/n_query_by_browser.png)
+![Top 15 Browser by Number of WDQS Queries, Not Known Automata Only.](figures/n_query_by_browser.png)
 
-![Top 15 Browser by Number of WDQS Users.](figures/n_user_by_browser.png)
+![Top 15 Browser by Number of WDQS Users, Not Known Automata Only.](figures/n_user_by_browser.png)
 
 ![Most requests have no referer, followed by those referred from search engine.](figures/n_query_by_referer_class.png)
 
-\newpage
+### Longitudinal
 
-## Longitudinal
-
-![There seems to be a weekly cycle in the number of spider queries. After the spike(August 16-19), both type of queries saw an increase. We will do more investigation later in the report.](figures/all_query_ts.png)
+![There seems to be a weekly cycle in the number of spider queries. After the spike (August 16-19), both types of queries saw an increase.](figures/all_query_ts.png)
 
 ![There seems to be a weekly cycle in the number of users.](figures/all_user_ts.png)
 
@@ -61,18 +64,32 @@ Extracting successful (HTTP status codes 200 \& 304) web requests to the SPARQL 
 
 ![Top 10 Countries by Number of WDQS Users, July 1st - August 29th, 2016.](figures/user_country_ts.png)
 
-\newpage
+Next, we excluded the spider queries in US from August 16 to 19 (Figure \ref{eclus}), then implemented BFAST method on the query data. BFAST(Breaks For Additive Season and Trend) integrates the decomposition of time series into trend, season, and remainder components with methods for detecting and characterizing change within time series. First, it decomposes the series into trend and seasonal components with the STL method, then it uses OLS-MOSUM test on each components to see if there is any significant break point. Next, BFAST fits the two components and the detected break points with linear regression. BFAST iteratively estimates the time and number of changes, and characterizes change by its magnitude and direction, until the number and position of the breakpoints are unchanged.
 
-Next, we excluded the spider queries in US from August 16 to 19, then implemented BFAST method on the query data. BFAST(Breaks For Additive Season and Trend) integrates the decomposition of time series into trend, season, and remainder components with methods for detecting and characterizing change within time series. First, it decompose the series into trend and seasonal components with the STL method, then it use OLS-MOSUM test on each components to see if there is any significant break point. Next, BFAST fit the two components and the detected break points with linear regression. BFAST iteratively estimates the time and number of changes, and characterizes change by its magnitude and direction, until the number and position of the breakpoints are unchanged.
+![After excluding the spider queries from US Aug 16-19, the weekly cycle seems to hold for those days. Further investigation is needed to find out whether this spike is contributed by a particular spider.\label{eclus}](figures/all_query_ecl_us_spider0816_ts.png)
 
-![After excluding the spider queries from US Aug 16-19, the weekly cycle seems to hold for those days. Further investigation is needed to find out whether this spike is contributed by a particular spider.](figures/all_query_ecl_us_spider0816_ts.png)
+![Adjusted number of queries decompose. BFAST method detect a change point on Aug 14 in the trend component. At the change point, the decrease may be a result of our adjustment (excluding US spiders), and more observations are needed to confirm the increase afterwards.](figures/adjust_query_decompose.png)
 
-![Adjusted number of queries decompose. St depicts the weekly cycle. BFAST method detect a change point on Aug 14 in the trend component(Tt). At the change point, the decrease may be a result of our adjustment(excluding US spider), and more observations is needed to confirm the increase afterwards.](figures/adjust_query_decompose.png)
-
-![Number of users decompose. St depicts the weekly cycle. There is no change point detected. We also see a slightly increasing trend.](figures/user_decompose.png)
+![Number of users decompose. There is no change point detected. We also see a slightly increasing trend.](figures/user_decompose.png)
 
 ![Median Number of Queries per User.](figures/md_query_per_user_ts.png)
 
-![Median Time to First Byte.](figures/median_time_firstbyte_ts.png)
+![Time to first byte is a measurement used as an indication of the responsiveness of our servers. We saw a sharp decrease around August 17, which may be the result of the large number of spider queries. We also saw two spikes around July 25 and August 13, of which further investigation is needed.](figures/median_time_firstbyte_ts.png)
 
-![Median Response Size.](figures/median_response_size_ts.png)
+\newpage
+
+## Conclusion/Discussion
+
+In summary, we found that:
+
+- Germany, United States and France have the largest number of users and queries. 
+- Among regular users (not known automata), Mac OS X and Chrome are most popular, while Ubuntu and Firefox users submit the most queries. 
+- Most queries have no referer, followed by those referred from search engine.
+- There are weekly cycles in the number of queries and users. And we also saw an increasing trend in the number of users.
+
+For the next step, more thorough analysis and investigation are needed in order to solve the following questions:
+
+- We saw a large number of spider queries from US on Aug 16-19. Are they from one or several particular spider?
+- Is there a significant increasing trend in the number of queries after August 19? Is the increasing trend in the number of users statistically significant?
+- If we exclude known automata queries from Germany, could we still see the weekly cycle?
+- What could possibly be the reason for the spikes and sharp decrease in the time to first byte pattern?

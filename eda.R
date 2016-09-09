@@ -28,9 +28,12 @@ user_by_country$n_spider <- as.numeric(user_by_country$n_spider)
   tidyr::gather("agent_type", "n", 2:3) %>%
   ggplot(aes(x = factor(country, levels=country[1:20]), y = n, fill = agent_type)) + 
   geom_bar(stat = "identity")+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
   scale_x_discrete(name = "Country") +
-  scale_y_continuous(name = "Number of Queries") +
+  scale_y_continuous(labels = polloi::compress, name = "Number of Queries") +
+  scale_fill_discrete(name="User Type",
+                      breaks=c("spider_query", "user_query"),
+                      labels=c("Known Automata", "User")) +
+  coord_flip()+
   ggtitle("Top 20 Countries by Number of WDQS Queries")} %>%
   ggsave("n_query_by_country.png", ., path = "figures", width = 10, height = 10, units = "in", dpi = 300)
 
@@ -45,82 +48,95 @@ user_by_country$n_spider <- as.numeric(user_by_country$n_spider)
   tidyr::gather("agent_type", "n", 2:3) %>%
   ggplot(aes(x = factor(country, levels=country[1:20]), y = n, fill = agent_type)) + 
   geom_bar(stat = "identity")+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
   scale_x_discrete(name = "Country") +
   scale_y_continuous(name = "Number of Users (IP+UA)") +
+  scale_fill_discrete(name="User Type",
+                      breaks=c("spider", "user"),
+                      labels=c("Known Automata", "User")) +
+  coord_flip()+
   ggtitle("Top 20 Countries by Number of WDQS Users")} %>%
   ggsave("n_user_by_country.png", ., path = "figures", width = 10, height = 10, units = "in", dpi = 300)
 
 
 # Aggregate by os
 top15_os_by_user <- user_by_os %>%
+  filter(agent_type=='user') %>%
   group_by(os) %>%
   summarise(n_user=sum(n_user)) %>%
   arrange(desc(n_user)) %>%
   top_n(15, n_user)
 {user_by_os %>%
-  group_by(os, agent_type) %>%
+  filter(agent_type=='user') %>%
+  group_by(os) %>%
   summarise(n_user=sum(n_user)) %>%
   filter(os %in% top15_os_by_user$os) %>%
-  ggplot(aes(x = factor(os, levels=top15_os_by_user$os), y = n_user, fill = agent_type)) + 
+  ggplot(aes(x = factor(os, levels=top15_os_by_user$os), y = n_user)) + 
   geom_bar(stat = "identity")+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
-  scale_x_discrete(name = "OS") +
+  scale_x_discrete(name = "Operating Systems") +
   scale_y_continuous(name = "Number of Users (IP+UA)") +
-  ggtitle("Top 15 OS by Number of WDQS Users")} %>%
+  coord_flip() +
+  ggtitle("Top 15 Operating Systems by Number of Not Known Automata WDQS Users")} %>%
   ggsave("n_user_by_os.png", ., path = "figures", width = 10, height = 10, units = "in", dpi = 300)
 
 top15_os_by_query <- user_by_os %>%
+  filter(agent_type=='user') %>%
   group_by(os) %>%
   summarise(n_query=sum(n_query)) %>%
   arrange(desc(n_query)) %>%
   top_n(15, n_query)
 {user_by_os %>%
-  group_by(os, agent_type) %>%
+  filter(agent_type=='user') %>%
+  group_by(os) %>%
   summarise(n_query=sum(n_query)) %>%
   filter(os %in% top15_os_by_query$os) %>%
-  ggplot(aes(x = factor(os, levels=top15_os_by_query$os), y = n_query, fill = agent_type)) + 
+  ggplot(aes(x = factor(os, levels=top15_os_by_query$os), y = n_query)) + 
   geom_bar(stat = "identity")+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
-  scale_x_discrete(name = "OS") +
-  scale_y_continuous(name = "Number of Queries") +
-  ggtitle("Top 15 OS by Number of WDQS Queries")} %>%
+  scale_x_discrete(name = "Operating Systems") +
+  scale_y_log10(breaks = c(10, 1e3, 1e5, 1.3e6), labels = polloi::compress, name = "Number of Queries") +
+  # scale_y_continuous(breaks = c(1, 5e5, 1e6), labels = polloi::compress, name = "Number of Queries") +
+  coord_flip() +
+  ggtitle("Top 15 Operating Systems by Number of Not Known Automata WDQS Queries")} %>%
   ggsave("n_query_by_os.png", ., path = "figures", width = 10, height = 10, units = "in", dpi = 300)
 
 
 # Aggregate by browser
 top15_browser_by_user <- user_by_browser %>%
+  filter(agent_type=='user') %>%
   group_by(browser) %>%
   summarise(n_user=sum(n_user)) %>%
   arrange(desc(n_user)) %>%
   top_n(15, n_user)
 {user_by_browser %>%
-  group_by(browser, agent_type) %>%
+  filter(agent_type=='user') %>%
+  group_by(browser) %>%
   summarise(n_user=sum(n_user)) %>%
   filter(browser %in% top15_browser_by_user$browser) %>%
-  ggplot(aes(x = factor(browser, levels=top15_browser_by_user$browser), y = n_user, fill = agent_type)) + 
+  ggplot(aes(x = factor(browser, levels=top15_browser_by_user$browser), y = n_user)) + 
   geom_bar(stat = "identity")+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
   scale_x_discrete(name = "Browser") +
   scale_y_continuous(name = "Number of Users (IP+UA)") +
-  ggtitle("Top 15 Browser by Number of WDQS Users")} %>%
+  coord_flip() + 
+  ggtitle("Top 15 Browser by Number of Not Known Automata WDQS Users")} %>%
   ggsave("n_user_by_browser.png", ., path = "figures", width = 10, height = 10, units = "in", dpi = 300)
 
 top15_browser_by_query <- user_by_browser %>%
+  filter(agent_type=='user') %>%
   group_by(browser) %>%
   summarise(n_query=sum(n_query)) %>%
   arrange(desc(n_query)) %>%
   top_n(15, n_query)
 {user_by_browser %>%
-  group_by(browser, agent_type) %>%
+  filter(agent_type=='user') %>%
+  group_by(browser) %>%
   summarise(n_query=sum(n_query)) %>%
   filter(browser %in% top15_browser_by_query$browser) %>%
-  ggplot(aes(x = factor(browser, levels=top15_browser_by_query$browser), y = n_query, fill = agent_type)) + 
+  ggplot(aes(x = factor(browser, levels=top15_browser_by_query$browser), y = n_query)) + 
   geom_bar(stat = "identity")+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
   scale_x_discrete(name = "Browser") +
-  scale_y_continuous(name = "Number of Queries") +
-  ggtitle("Top 15 Browser by Number of WDQS Queries")} %>%
+  scale_y_log10(breaks=c(10,1000,1e5,1.5e6), labels=polloi::compress, name = "Number of Queries") +
+  # scale_y_continuous(breaks=c(1, seq(5e5,1.5e6,5e5)), labels=polloi::compress, name = "Number of Queries") +
+  coord_flip() +
+  ggtitle("Top 15 Browser by Number of Not Known Automata WDQS Queries")} %>%
   ggsave("n_query_by_browser.png", ., path = "figures", width = 10, height = 10, units = "in", dpi = 300)
 
 
@@ -162,22 +178,24 @@ top15_device_by_query <- user_by_device %>%
 
 # Aggregate by agent_type
 agent_type_p1 <- user_by_agent_type %>%
+  mutate(agent_type=recode(agent_type, 'spider'='known automata')) %>%
   group_by(agent_type) %>%
   summarise(n_user=sum(n_user)) %>%
   ggplot(aes(x = agent_type, y = n_user)) + 
   geom_bar(stat = "identity")+
-  scale_x_discrete(name = "Agent Type") +
-  scale_y_continuous(name = "Number of Users (IP+UA)") +
+  scale_x_discrete(name = "User Type") +
+  scale_y_continuous(labels = polloi::compress, name = "Number of Users (IP+UA)") +
   coord_flip() 
 agent_type_p2 <- user_by_agent_type %>%
+  mutate(agent_type=recode(agent_type, 'spider'='known automata')) %>%
   group_by(agent_type) %>%
   summarise(n_query=sum(n_query)) %>%
   ggplot(aes(x = agent_type, y = n_query)) + 
   geom_bar(stat = "identity")+
-  scale_x_discrete(name = "Agent Type") +
-  scale_y_continuous(name = "Number of Queries")+
+  scale_x_discrete(name = "User Type") +
+  scale_y_continuous(breaks = c(1, seq(1e6, 4e6, 1e6)), labels = polloi::compress, name = "Number of Queries")+
   coord_flip() 
-agent_type_p <- plot_grid(plotlist = list(agent_type_p1, agent_type_p2), nrow = 2)
+agent_type_p <- plot_grid(plotlist = list(agent_type_p1, agent_type_p2), nrow = 2, labels = "Number of WDQS Queries and Number of WDQS Users by User Type", hjust = -0.03)
 ggsave("by_agent_type.png", agent_type_p, path = "figures", width = 10, height = 10, units = "in", dpi = 300)
 
 
@@ -191,8 +209,11 @@ ggsave("by_agent_type.png", agent_type_p, path = "figures", width = 10, height =
   tidyr::gather("agent_type", "n", 2:3) %>%
   ggplot(aes(x = factor(referer_class, levels=referer_class), y = n, fill = agent_type)) + 
   geom_bar(stat = "identity")+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
   scale_x_discrete(name = "Referer Class") +
-  scale_y_continuous(name = "Number of Queries") +
+  scale_y_continuous(labels=polloi::compress, name = "Number of Queries") +
+  scale_fill_discrete(name="User Type",
+                      breaks=c("spider_query", "user_query"),
+                      labels=c("Known Automata", "User")) +
+  coord_flip()+
   ggtitle("Number of WDQS Queries by Referer Class")} %>%
   ggsave("n_query_by_referer_class.png", ., path = "figures", width = 10, height = 10, units = "in", dpi = 300)
