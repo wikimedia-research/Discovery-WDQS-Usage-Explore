@@ -13,7 +13,7 @@ library(ggplot2)
 library(magrittr)
 import::from(ggthemes, theme_tufte)
 
-theme_set(theme_tufte(base_family = "Gill Sans", base_size = 12))
+theme_set(theme_tufte(base_family = "Gill Sans", base_size = 18))
 
 webrequest_by_country$n_user_query <- as.numeric(webrequest_by_country$n_user_query)
 webrequest_by_country$dt %<>% lubridate::ymd()
@@ -33,7 +33,7 @@ temp <- webrequest_by_country %>%
                color = "black", linetype = "dashed") +
   geom_text(data = filter(temp, type=="all_query", dt == temp$dt[which.max(n)]),
               aes(label = paste0(dt,", ",n," total queries")),
-              hjust = "right", vjust = "top", color = "black", nudge_x = -0.1, nudge_y = -0.05) +
+              hjust = "right", vjust = "top", color = "black", nudge_x = -0.1, nudge_y = -0.05, size=7) +
   scale_x_date(name = "Date") +
   scale_y_continuous(labels=polloi::compress, name = "Number of Queries") +
   scale_color_discrete(name="User Type",
@@ -107,12 +107,13 @@ query_country_ts_p1 <- ggplot(temp, aes(x=dt, y=all_query, colour=country)) +
   scale_y_continuous(breaks=c(1,2e5,4e5,6e5),labels=polloi::compress, name = "Number of Queries") +
   ggtitle("Top 10 Countries by Number of WDQS Queries", subtitle="July 1st - August 29th")
 query_country_ts_p2 <- ggplot(temp, aes(x=dt, y=all_query, colour=country)) + 
-  geom_smooth(se = FALSE, method = "gam", formula = y ~ s(x, k = 9)) +
+  #geom_smooth(se = FALSE, method = "gam", formula = y ~ s(x, k = 9)) +
+  geom_smooth(se = FALSE, method = "loess", span = 0.3) +
   scale_x_date(name = "Date") +
   scale_y_log10(labels=polloi::compress, name = "Number of Queries") +
   ggtitle("Top 10 Countries by Number of WDQS Queries", subtitle="July 1st - August 29th, Smoothed")  
 query_country_ts_p <- plot_grid(plotlist = list(query_country_ts_p1, query_country_ts_p2), ncol = 2)
-ggsave("query_country_ts.png", query_country_ts_p, path = "figures", width = 14, height = 5, units = "in", dpi = 300)
+ggsave("query_country_ts.png", query_country_ts_p, path = "figures", width = 15, height = 5, units = "in", dpi = 300)
 
 
 top_user_country <- user_by_country %>%
@@ -138,6 +139,7 @@ user_country_ts_p1 <- ggplot(temp, aes(x=dt, y=all_user, colour=country)) +
   ggtitle("Top 10 Countries by Number of WDQS Users", subtitle="July 1st - August 29th")
 user_country_ts_p2 <- ggplot(temp, aes(x=dt, y=all_user, colour=country)) + 
   geom_smooth(se = FALSE, method = "gam", formula = y ~ s(x, k = 50)) +
+  # geom_smooth(se = FALSE, method = "loess", span = 0.3) +
   scale_x_date(name = "Date") +
   scale_y_continuous(name = "Number of Users (IP+UA)") +
   ggtitle("Top 10 Countries by Number of WDQS Users", subtitle="July 1st - August 29th, Smoothed")
@@ -161,7 +163,7 @@ temp <- webrequest_by_country %>%
                color = "black", linetype = "dashed") +
   geom_text(data = filter(temp, type=="all_query", dt == temp$dt[which.max(n)]),
             aes(label = paste0(dt,", ",n," total queries")),
-            hjust = "right", vjust = "top", color = "black", nudge_x = -0.1, nudge_y = -0.05) +
+            hjust = "right", vjust = "top", color = "black", nudge_x = -0.1, nudge_y = -0.05, size=7) +
   scale_x_date(name = "Date") +
   scale_y_continuous(breaks=c(1, seq(2e5,6e5,2e5)), labels=polloi::compress, name = "Number of Queries") +
   scale_color_discrete(name="User Type",
