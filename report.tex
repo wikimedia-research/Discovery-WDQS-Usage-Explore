@@ -27,7 +27,7 @@
 \PassOptionsToPackage{usenames,dvipsnames}{color} % color is loaded by hyperref
 \hypersetup{unicode=true,
             pdftitle={Exploration on the Use of WDQS},
-            pdfauthor={Chelsy Xie (Analysis \& Report); Mikhail Popov (Review)},
+            pdfauthor={Chelsy Xie (Analysis \& Report); Mikhail Popov (Review); Deb Tankersley (Review); Stas Malyshev (Review)},
             pdfsubject={Breakdown by Geography, User Agent and Referer Class},
             pdfborder={0 0 0},
             breaklinks=true}
@@ -39,7 +39,7 @@
 \makeatother
 % Scale images if necessary, so that they will not overflow the page
 % margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width=11cm,height=11cm,keepaspectratio][width, height, ...]{}
+% using explicit options in \includegraphics[width=9cm,height=9cm,keepaspectratio][width, height, ...]{}
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt plus 2pt minus 1pt}
@@ -67,7 +67,7 @@
   \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
 \subtitle{Breakdown by Geography, User Agent and Referer Class}
-  \author{Chelsy Xie (Analysis \& Report) \\ Mikhail Popov (Review)}
+  \author{Chelsy Xie (Analysis \& Report) \\ Mikhail Popov (Review) \\ Deb Tankersley (Review) \\ Stas Malyshev (Review)}
   \preauthor{\centering\large\emph}
   \postauthor{\par}
   \predate{\centering\large\emph}
@@ -107,7 +107,7 @@
 \begin{abstract}
 Wikidata Query Service (WDQS) was launched publicly on September 7, 2015. For the first anniversary, we want to take a look into who is using WDQS, and how they are using it. In this report, we focus on the web requests to the SPARQL endpoint, their breakdown by country, user agent, referer class, and their pattern over time. 
 
-We found that Germany, United States and France have the largest number of users and queries. Among regular users, Mac OS X and Chrome are most popular, while Ubuntu and Firefox users submit the most queries. Most queries have no referer, followed by those referred from search engine. There are weekly cycles in the number of queries and users. We also saw an increasing trend in the number of users.
+We found that Germany, United States and France have the largest number of users and queries. Among all operating systems, Mac OS X has the largest number of real users and Ubuntu users submit the most queries; among all browsers, Chrome is the most popular one and Firefox users submit the most queries. Most queries do not have a referer as they are from real people, but there are a large amount of queries that are from automata. There are weekly cycles in the number of queries and users. We also saw an increasing trend in the number of users.
 \end{abstract}
 
 \subsection{Data}\label{data}
@@ -131,15 +131,15 @@ for more details.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=11cm,height=11cm,keepaspectratio]{figures/n_query_by_country.png}
+\includegraphics{figures/n_query_by_country.png}
 \caption{Germany, United States and France take the first 3 places on
-the rank. While most of them are spider queries in Germany and US,
+the rank. While most of them are automata queries in Germany and US,
 France has the most user queries.}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=10cm,height=10cm,keepaspectratio]{figures/n_user_by_country.png}
+\includegraphics{figures/n_user_by_country.png}
 \caption{United States, Germany and France have the largest number of
 WDQS users.}
 \end{figure}
@@ -153,37 +153,37 @@ WDQS users.}
 \begin{figure}[H]
 \centering
 \includegraphics[width=11cm,height=11cm,keepaspectratio]{figures/n_query_by_os.png}
-\caption{Top 15 Operating Systems by Number of WDQS Queries, Not Known
-Automata Only.}
+\caption{Top 15 Operating Systems by Number of WDQS Queries, Excluding
+Known Automata.}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=11cm,height=11cm,keepaspectratio]{figures/n_user_by_os.png}
-\caption{Top 15 Operating Systems by Number of WDQS Users, Not Known
-Automata Only. It looks like Ubuntu users have more queries-per-user
+\caption{Top 15 Operating Systems by Number of WDQS Users, Excluding
+Known Automata. It looks like Ubuntu users have more queries-per-user
 than other operating systems on average.}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=11cm,height=11cm,keepaspectratio]{figures/n_query_by_browser.png}
-\caption{Top 15 Browser by Number of WDQS Queries, Not Known Automata
-Only.}
+\caption{Top 15 Browser by Number of WDQS Queries, Excluding Known
+Automata.}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=11cm,height=11cm,keepaspectratio]{figures/n_user_by_browser.png}
-\caption{Top 15 Browser by Number of WDQS Users, Not Known Automata
-Only.}
+\caption{Top 15 Browser by Number of WDQS Users, Excluding Known
+Automata.}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=11cm,height=11cm,keepaspectratio]{figures/n_query_by_referer_class.png}
-\caption{Most requests have no referer, followed by those referred from
-search engine.}
+\includegraphics[width=10cm,height=10cm,keepaspectratio]{figures/n_query_by_referer_class.png}
+\caption{Most queries do not have a referer as they are from real
+people, but there are a large amount of queries that are from automata.}
 \end{figure}
 
 \subsubsection{Longitudinal}\label{longitudinal}
@@ -191,7 +191,7 @@ search engine.}
 \begin{figure}[H]
 \centering
 \includegraphics[width=9cm,height=9cm,keepaspectratio]{figures/all_query_ts.png}
-\caption{There seems to be a weekly cycle in the number of spider
+\caption{There seems to be a weekly cycle in the number of automata
 queries. After the spike (August 16-19), both types of queries saw an
 increase.}
 \end{figure}
@@ -217,26 +217,26 @@ saw a huge decrease in these two months.}
 29th, 2016.}
 \end{figure}
 
-Next, we excluded the spider queries in US from August 16 to 19 (Figure
-\ref{eclus}), then implemented BFAST method on the query data. BFAST
-(Breaks For Additive Season and Trend) integrates the decomposition of
-time series into trend, season, and remainder components with methods
-for detecting and characterizing change within time series. First, it
-decomposes the series into trend and seasonal components with the STL
-method, then it uses OLS-MOSUM test on each components to see if there
-is any significant break point. Next, BFAST fits the two components and
-the detected break points with linear regression. BFAST iteratively
-estimates the time and number of changes, and characterizes change by
-its magnitude and direction, until the number and position of the
-breakpoints are unchanged.
+Next, we excluded the automata queries in US from August 16 to 19
+(Figure \ref{eclus}), then implemented BFAST method on the query data.
+BFAST (Breaks For Additive Season and Trend) integrates the
+decomposition of time series into trend, season, and remainder
+components with methods for detecting and characterizing change within
+time series. First, it decomposes the series into trend and seasonal
+components with the STL method, then it uses OLS-MOSUM test on each
+components to see if there is any significant break point. Next, BFAST
+fits the two components and the detected break points with linear
+regression. BFAST iteratively estimates the time and number of changes,
+and characterizes change by its magnitude and direction, until the
+number and position of the breakpoints are unchanged.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=9cm,height=9cm,keepaspectratio]{figures/all_query_ecl_us_spider0816_ts.png}
-\caption{After excluding the spider queries from US Aug 16-19, the
+\caption{After excluding the automata queries from US Aug 16-19, the
 weekly cycle seems to hold for those days. Further investigation is
 needed to find out whether this spike is contributed by a particular
-spider.\label{eclus}}
+automata.\label{eclus}}
 \end{figure}
 
 \begin{figure}[H]
@@ -244,7 +244,7 @@ spider.\label{eclus}}
 \includegraphics[width=9cm,height=9cm,keepaspectratio]{figures/adjust_query_decompose.png}
 \caption{Adjusted number of queries decomposition. BFAST method detect a
 change point on Aug 14 in the trend component. At the change point, the
-decrease may be a result of our adjustment (excluding US spiders), and
+decrease may be a result of our adjustment (excluding US automata), and
 more observations are needed to confirm the increase afterwards.}
 \end{figure}
 
@@ -266,7 +266,7 @@ detected. We also see a slightly increasing trend.}
 \includegraphics[width=9cm,height=9cm,keepaspectratio]{figures/median_time_firstbyte_ts.png}
 \caption{Time to first byte is a measurement used as an indication of
 the responsiveness of our servers. We saw a sharp decrease around August
-17, which may be the result of the large number of spider queries. We
+17, which may be the result of the large number of automata queries. We
 also saw two spikes around July 25 and August 13, of which further
 investigation is needed.}
 \end{figure}
@@ -302,8 +302,8 @@ in order to solve the following questions:
   It looks like Ubuntu users have more queries-per-user than other
   operating systems on average. Is it the result of several outliers?
 \item
-  We saw a large number of spider queries from US on Aug 16-19. Are they
-  from one or several particular spider?
+  We saw a large number of automata queries from US on Aug 16-19. Are
+  they from one or several particular automata?
 \item
   What is the reason for the decrease number of queries of Bosnia and
   Herzegovina?

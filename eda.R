@@ -86,7 +86,7 @@ top15_os_by_user <- user_by_os %>%
                 hjust=ifelse(n_user>6000,0.5,0)), size=6) +
   theme(axis.text=element_text(size=18))+
   coord_flip() +
-  ggtitle("Top 15 Operating Systems by Number of Not Known Automata WDQS Users")} %>%
+  ggtitle("Top 15 Operating Systems by Number of WDQS Users", subtitle="Excluding Known Automata")} %>%
   ggsave("n_user_by_os.png", ., path = "figures", width = 12, height = 10, units = "in", dpi = 300)
 
 top15_os_by_query <- user_by_os %>%
@@ -109,7 +109,7 @@ top15_os_by_query <- user_by_os %>%
                 hjust=ifelse(n_query>1.2e6,0.5,0)), size=6) +
   theme(axis.text=element_text(size=18))+
   coord_flip() +
-  ggtitle("Top 15 Operating Systems by Number of Not Known Automata WDQS Queries")} %>%
+  ggtitle("Top 15 Operating Systems by Number of WDQS Queries", subtitle="Excluding Known Automata Queries")} %>%
   ggsave("n_query_by_os.png", ., path = "figures", width = 13, height = 10, units = "in", dpi = 300)
 
 
@@ -133,7 +133,7 @@ top15_browser_by_user <- user_by_browser %>%
                 hjust=ifelse(n_user>1e4,0.5,0)), size=6) +
   theme(axis.text=element_text(size=18))+
   coord_flip() + 
-  ggtitle("Top 15 Browser by Number of Not Known Automata WDQS Users")} %>%
+  ggtitle("Top 15 Browser by Number of WDQS Users", subtitle="Excluding Known Automata")} %>%
   ggsave("n_user_by_browser.png", ., path = "figures", width = 12, height = 10, units = "in", dpi = 300)
 
 top15_browser_by_query <- user_by_browser %>%
@@ -156,7 +156,7 @@ top15_browser_by_query <- user_by_browser %>%
                 hjust=ifelse(n_query>1.3e6,0.5,0)), size=6) +
   theme(axis.text=element_text(size=18))+
   coord_flip() +
-  ggtitle("Top 15 Browser by Number of Not Known Automata WDQS Queries")} %>%
+  ggtitle("Top 15 Browser by Number of WDQS Queries", subtitle="Excluding Known Automata Queries")} %>%
   ggsave("n_query_by_browser.png", ., path = "figures", width = 12, height = 10, units = "in", dpi = 300)
 
 
@@ -226,6 +226,8 @@ ggsave("by_agent_type.png", agent_type_p, path = "figures", width = 10, height =
 
 
 # Aggregate by referer_class
+webrequest_by_referer_class$referer_class <- gsub("^external .*", "external\n(search engine)", webrequest_by_referer_class$referer_class)
+webrequest_by_referer_class$referer_class <- gsub("^external$", "external\n(other)", webrequest_by_referer_class$referer_class)
 {webrequest_by_referer_class %>%
   group_by(referer_class) %>%
   summarise(n_query=sum(n_query), user_query=sum(n_user_query)) %>%
