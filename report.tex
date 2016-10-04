@@ -27,7 +27,7 @@
 \PassOptionsToPackage{usenames,dvipsnames}{color} % color is loaded by hyperref
 \hypersetup{unicode=true,
             pdftitle={Exploration on the Use of WDQS},
-            pdfauthor={Chelsy Xie (Analysis \& Report); Mikhail Popov (Review); Deb Tankersley (Review); Stas Malyshev (Review)},
+            pdfauthor={Chelsy Xie (Analysis \& Report); Mikhail Popov (Review); Deb Tankersley (Product Management); Stas Malyshev (Review)},
             pdfsubject={Breakdown by Geography, User Agent and Referer Class},
             pdfborder={0 0 0},
             breaklinks=true}
@@ -67,7 +67,7 @@
   \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
 \subtitle{Breakdown by Geography, User Agent and Referer Class}
-  \author{Chelsy Xie (Analysis \& Report) \\ Mikhail Popov (Review) \\ Deb Tankersley (Review) \\ Stas Malyshev (Review)}
+  \author{Chelsy Xie (Analysis \& Report) \\ Mikhail Popov (Review) \\ Deb Tankersley (Product Management) \\ Stas Malyshev (Review)}
   \preauthor{\centering\large\emph}
   \postauthor{\par}
   \predate{\centering\large\emph}
@@ -107,7 +107,7 @@
 \begin{abstract}
 Wikidata Query Service (WDQS) was launched publicly on September 7, 2015. For the first anniversary, we want to take a look into who is using WDQS, and how they are using it. In this report, we focus on the web requests to the SPARQL endpoint, their breakdown by country, user agent, referer class, and their pattern over time. 
 
-We found that Germany, United States and France have the largest number of users and queries. Among all operating systems, Mac OS X has the largest number of real users and Ubuntu users submit the most queries; among all browsers, Chrome is the most popular one and Firefox users submit the most queries. Most queries do not have a referer as they are from real people, but there are a large amount of queries that are from automata. There are weekly cycles in the number of queries and users. We also saw an increasing trend in the number of users.
+We found that Germany, United States and France have the largest number of users and queries. Among all operating systems, Mac OS X has the largest number of real users and Ubuntu users submit the most queries; among all browsers, Chrome is the most popular one and Firefox users submit the most queries. Most queries do not have a referer as they are from real people, but there are a large amount of queries that are from known automata (commonly known as bots or spiders). There are weekly, repeating, cycles in the number of queries and users -- they are higher during weekdays than weekends every week. We also saw an increasing trend in the number of users.
 \end{abstract}
 
 \subsection{Data}\label{data}
@@ -133,7 +133,7 @@ for more details.
 \centering
 \includegraphics{figures/n_query_by_country.png}
 \caption{Germany, United States and France take the first 3 places on
-the rank. While most of them are automata queries in Germany and US,
+the rank. While most of them are known automata queries in Germany and US,
 France has the most user queries.}
 \end{figure}
 
@@ -183,7 +183,7 @@ Automata.}
 \centering
 \includegraphics[width=10cm,height=10cm,keepaspectratio]{figures/n_query_by_referer_class.png}
 \caption{Most queries do not have a referer as they are from real
-people, but there are a large amount of queries that are from automata.}
+people, but there are a large amount of queries that are from known automata.}
 \end{figure}
 
 \subsubsection{Longitudinal}\label{longitudinal}
@@ -191,7 +191,7 @@ people, but there are a large amount of queries that are from automata.}
 \begin{figure}[H]
 \centering
 \includegraphics[width=9cm,height=9cm,keepaspectratio]{figures/all_query_ts.png}
-\caption{There seems to be a weekly cycle in the number of automata
+\caption{There seems to be a weekly cycle in the number of known automata
 queries. After the spike (August 16-19), both types of queries saw an
 increase.}
 \end{figure}
@@ -217,7 +217,7 @@ saw a huge decrease in these two months.}
 29th, 2016.}
 \end{figure}
 
-Next, we excluded the automata queries in US from August 16 to 19
+Next, we excluded the known automata queries in US from August 16 to 19
 (Figure \ref{eclus}), then implemented BFAST method on the query data.
 BFAST (Breaks For Additive Season and Trend) integrates the
 decomposition of time series into trend, season, and remainder
@@ -233,7 +233,7 @@ number and position of the breakpoints are unchanged.
 \begin{figure}[H]
 \centering
 \includegraphics[width=9cm,height=9cm,keepaspectratio]{figures/all_query_ecl_us_spider0816_ts.png}
-\caption{After excluding the automata queries from US Aug 16-19, the
+\caption{After excluding the known automata queries from US Aug 16-19, the
 weekly cycle seems to hold for those days. Further investigation is
 needed to find out whether this spike is contributed by a particular
 automata.\label{eclus}}
@@ -244,7 +244,7 @@ automata.\label{eclus}}
 \includegraphics[width=9cm,height=9cm,keepaspectratio]{figures/adjust_query_decompose.png}
 \caption{Adjusted number of queries decomposition. BFAST method detect a
 change point on Aug 14 in the trend component. At the change point, the
-decrease may be a result of our adjustment (excluding US automata), and
+decrease may be a result of our adjustment (excluding US known automata), and
 more observations are needed to confirm the increase afterwards.}
 \end{figure}
 
@@ -266,7 +266,7 @@ detected. We also see a slightly increasing trend.}
 \includegraphics[width=9cm,height=9cm,keepaspectratio]{figures/median_time_firstbyte_ts.png}
 \caption{Time to first byte is a measurement used as an indication of
 the responsiveness of our servers. We saw a sharp decrease around August
-17, which may be the result of the large number of automata queries. We
+17, which may be the result of the large number of known automata queries. We
 also saw two spikes around July 25 and August 13, of which further
 investigation is needed.}
 \end{figure}
@@ -283,13 +283,15 @@ In summary, we found that:
   Germany, United States and France have the largest number of users and
   queries.
 \item
-  Among regular users (not known automata), Mac OS X and Chrome are most
-  popular, while Ubuntu and Firefox users submit the most queries.
+  Among all operating systems, Mac OS X has the largest number of real users and Ubuntu users 
+  submit the most queries; among all browsers, Chrome is the most popular one and Firefox users 
+  submit the most queries.
 \item
-  Most queries have no referer, followed by those referred from search
-  engine.
+  Most queries do not have a referer as they are from real people, but there are a large amount of 
+  queries that are from known automata (commonly known as bots or spiders).
 \item
-  There are weekly cycles in the number of queries and users. And we
+  There are weekly, repeating, cycles in the number of queries and users -- they are higher during 
+  weekdays than weekends every week. And we
   also saw an increasing trend in the number of users.
 \end{itemize}
 
@@ -302,7 +304,7 @@ in order to solve the following questions:
   It looks like Ubuntu users have more queries-per-user than other
   operating systems on average. Is it the result of several outliers?
 \item
-  We saw a large number of automata queries from US on Aug 16-19. Are
+  We saw a large number of known automata queries from US on Aug 16-19. Are
   they from one or several particular automata?
 \item
   What is the reason for the decrease number of queries of Bosnia and
